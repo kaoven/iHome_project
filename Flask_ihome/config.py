@@ -16,7 +16,7 @@ class DevelopConfig(Config):
     DEBUG = True
 
     # 设置数据库的连接
-    SQLALCHEMY_DATABASE_URI = "mysql//root:mysql@192.168.128.134:3306/ihome"
+    SQLALCHEMY_DATABASE_URI = "mysql://root:mysql@192.168.128.134:3306/ihome"
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     # 设置redis连接参数

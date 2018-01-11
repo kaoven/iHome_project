@@ -10,6 +10,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 
+
 # 创建数据库工具
 db = SQLAlchemy()
 
@@ -59,8 +60,16 @@ def CreateApp(run_name):
     # 从请求体重读取一个csrf_token的值，进行比较，如果相同，则允许访问，否则返回403错误
     CSRFProtect(app)
 
+    # 注册自定义转换器
+    from utils.commons import ReConverter
+    app.url_map.converters["re"] = ReConverter
+
     # 注册接口蓝图
     from ihome import api_v1_0
     app.register_blueprint(api_v1_0.api, url_prefix="/api/v1.0")
+
+    # 注册静态网页蓝图
+    from ihome import web_page
+    app.register_blueprint(web_page.html)
 
     return app
