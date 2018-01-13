@@ -21,7 +21,7 @@ function generateUUID() {
 function generateImageCode() {
     // 向后端请求图片验证码
     // 生成验证码图片的编号
-    var imageCodeId = generateUUID();
+    imageCodeId = generateUUID();
 
     // 拼接验证码图片的路径（即，后端的请求路径)
     var url = "/api/v1.0/image_codes/" + imageCodeId;
@@ -31,6 +31,7 @@ function generateImageCode() {
 }
 
 function sendSMSCode() {
+    //　防止双击，移除掉phonecode-a的onclick属性
     $(".phonecode-a").removeAttr("onclick");
     var mobile = $("#mobile").val();
     if (!mobile) {
@@ -45,31 +46,32 @@ function sendSMSCode() {
         $("#image-code-err").show();
         $(".phonecode-a").attr("onclick", "sendSMSCode();");
         return;
-    }
-    $.get("/api/smscode", {mobile:mobile, code:imageCode, codeId:imageCodeId}, 
-        function(data){
-            if (0 != data.errno) {
-                $("#image-code-err span").html(data.errmsg); 
-                $("#image-code-err").show();
-                if (2 == data.errno || 3 == data.errno) {
-                    generateImageCode();
+    };
+    var reqData = {
+        image_code_id:imageCodeId,
+        image_code_text:imageCode
+    };
+    $.get("/api/v1.0/sms_codes/"+mobile,reqData,function (data) {
+        if (data.errcode=="0"){
+            //　表示发送成功
+            // 显示倒计时
+            var num =60;
+            var timer = setInterval(function () {
+                num = num　-　1
+                if (num > 0){
+                    $('.phonecode-a').html(num + '秒')
+                }else {
+                    $('.phonecode-a').html("获取验证码");
+                    $('.phonecode-a').attr('onclick',"sendSMSCode();");
+                    clearInterval(timer)
                 }
-                $(".phonecode-a").attr("onclick", "sendSMSCode();");
-            }   
-            else {
-                var $time = $(".phonecode-a");
-                var duration = 60;
-                var intervalid = setInterval(function(){
-                    $time.html(duration + "秒"); 
-                    if(duration === 1){
-                        clearInterval(intervalid);
-                        $time.html('获取验证码'); 
-                        $(".phonecode-a").attr("onclick", "sendSMSCode();");
-                    }
-                    duration = duration - 1;
-                }, 1000, 60); 
-            }
-    }, 'json'); 
+            },1000,60)
+        }else {
+            alert(data.errmsg)
+            $('.phonecode-a').attr('onclick',"sendSMSCode();");
+        }
+    });
+
 }
 
 $(document).ready(function() {
