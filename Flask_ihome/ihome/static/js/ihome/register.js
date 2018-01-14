@@ -93,11 +93,13 @@ $(document).ready(function() {
         $("#password2-err").hide();
     });
     $(".form-register").submit(function(e){
+        // 取消掉表单的提交行为
         e.preventDefault();
-        mobile = $("#mobile").val();
-        phoneCode = $("#phonecode").val();
-        passwd = $("#password").val();
-        passwd2 = $("#password2").val();
+
+        var mobile = $("#mobile").val();
+        var phoneCode = $("#phonecode").val();
+        var password = $("#password").val();
+        var password2 = $("#password2").val();
         if (!mobile) {
             $("#mobile-err span").html("请填写正确的手机号！");
             $("#mobile-err").show();
@@ -108,15 +110,37 @@ $(document).ready(function() {
             $("#phone-code-err").show();
             return;
         }
-        if (!passwd) {
+        if (!password) {
             $("#password-err span").html("请填写密码!");
             $("#password-err").show();
             return;
         }
-        if (passwd != passwd2) {
+        if (password != password2) {
             $("#password2-err span").html("两次密码不一致!");
             $("#password2-err").show();
             return;
         }
+
+      var reqData = {mobile:mobile,sms_code:phoneCode,password:password,password2:password2}
+      var reqJSONstr = JSON.stringify(reqData)
+
+      // 使用ajax请求注册
+      $.ajax({
+          url:"/api/v1.0/users",
+          type:"post",
+          data:reqJSONstr,
+          contentType:"application/json",
+          dataType:"json",
+          headers:{
+              "X-CSRFToken":getCookie("csrf_token")
+          },
+          success:function (data) {
+              if (data.errcode == "0"){
+                  location.href = "/index"
+              }else {
+                  alert(data.errmsg);
+              }
+          }
+      })
     });
 })

@@ -59,7 +59,7 @@ def CreateApp(run_name):
     # 防护机制
     # 对于包含了请求体的请求（POST、PUT、DELETE），从请求的cookie中读取一个csrf_token的值，
     # 从请求体重读取一个csrf_token的值，进行比较，如果相同，则允许访问，否则返回403错误
-    # CSRFProtect(app)
+    CSRFProtect(app)
 
     # 注册自定义转换器
     from utils.commons import ReConverter

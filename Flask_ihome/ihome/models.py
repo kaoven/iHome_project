@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from . import db
-
+from werkzeug import security
 
 class BaseModel(object):
     """模型基类，为每个模型补充创建时间与更新时间"""
@@ -25,6 +25,20 @@ class User(BaseModel, db.Model):
     avatar_url = db.Column(db.String(128))  # 用户头像路径
     houses = db.relationship("House", backref="user")  # 用户发布的房屋
     orders = db.relationship("Order", backref="user")  # 用户下的订单
+
+    # 把校验密码设置为对象方法，在登录验证密码时，调用此方法
+    def check_password(self, origin_password):
+        return security.check_password_hash(self.password_hash, origin_password)
+
+    # 读属性的方法
+    @property
+    def password(self):
+        return AttributeError("不支持读取属性")
+
+    # 对原始的密码进行sha256加密的方法
+    @password.setter
+    def password(self, origin_password):
+        self.password_hash = security.generate_password_hash(origin_password)
 
 
 class Area(BaseModel, db.Model):

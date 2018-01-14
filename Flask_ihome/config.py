@@ -24,11 +24,9 @@ class DevelopConfig(Config):
     REDIS_PORT = 6379
     REDIS_DB = 0
 
-    SESSION_REDIS = redis.StrictRedis(host='192.168.128.134', port=6379, db=1)  # 保存session的数据库
+    # 保存session的redis数据库
+    SESSION_REDIS = redis.StrictRedis(host='192.168.128.134', port=6379, db=1)
 
-    # 配置celery
-    CELERY_BROKER_URL = "redis://192.168.128.134:6379/2"
-    CELERY_RESULT_BACKEND = "redis://192.168.128.134:6379/2"
 
 
 class ProductConfig(Config):
