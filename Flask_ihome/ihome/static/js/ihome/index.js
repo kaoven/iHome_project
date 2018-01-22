@@ -58,7 +58,15 @@ function goToSearchPage(th) {
 }
 
 $(document).ready(function(){
-    $(".top-bar>.register-login").show();
+    $.get("/api/v1.0/session",function (data) {
+        if (data.errcode == "0"){
+           $(".top-bar>.user-info").show();
+           $(".top-bar>.user-info>.user-name").html(data.datas.username);
+        }else {
+           $(".top-bar>.register-login").show();
+        }
+    },"json");
+
     var mySwiper = new Swiper ('.swiper-container', {
         loop: true,
         autoplay: 2000,

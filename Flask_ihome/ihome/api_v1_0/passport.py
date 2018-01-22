@@ -122,7 +122,7 @@ def login():
             # 把错误次数保存在redis中
             # 如果是用户第一次登录错误，错误次数保存为１
             # 如果用户登录错误次数大于１次，在错误次数＋１
-            redis_store.incr("access_num_%s"%user_ip)
+            redis_store.incr("access_num_%s" % user_ip)
             # 设置记录过期时间，即是用户被禁止时间
             redis_store.expire("access_num_%s" % user_ip, constants.WRONG_LOGIN_FORBID_TIME)
         except Exception as e:
@@ -135,3 +135,23 @@ def login():
     session["user_name"] = user.name
     # 返回信息
     return jsonify(errcode=RET.OK, errmsg="登录成功")
+
+
+# GET /session
+@api.route('/session', methods=["GET"])
+def check_login():
+    """查询是否登录"""
+    username = session.get("user_name")
+    if username is not None:
+        print (username)
+        return jsonify(errcode=RET.OK, errmsg="true", datas={"username": username})
+    else:
+        return jsonify(errcode=RET.SESSIONERR, errmsg="false")
+
+
+@api.route('/session', methods=["DELETE"])
+def logout():
+    """退出"""
+    # 清除session
+    session.clear()
+    return jsonify(errcode=RET.OK, errmsg="ok")

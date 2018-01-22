@@ -17,3 +17,9 @@ WRONG_LOGIN_MAX_TIMES = 5
 
 # 用户登录禁止时间 单位：秒
 WRONG_LOGIN_FORBID_TIME = 600
+
+# 七牛网站个人域名
+QINIU_URL_DOMIAN = "http://o91qujnqh.bkt.clouddn.com/"
+
+# 城区信息缓存时间 单位：秒
+AREA_INFO_REDIS_CACHE_EXPIRE = 24*60*60

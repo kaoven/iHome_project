@@ -20,7 +20,7 @@ $(document).ready(function() {
             $("#mobile-err").show();
             return;
         } 
-        if (!passwd) {
+        if (!password) {
             $("#password-err span").html("请填写密码!");
             $("#password-err").show();
             return;
